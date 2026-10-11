@@ -5,7 +5,7 @@ import br.com.zenon.enums.TransactionCategory;
 import java.math.BigDecimal;
 
 public record Transaction(int step, TransactionCategory type, BigDecimal amount, TransactionCustomer transactionCustumerOrigin,
-                          TransactionCustomer transactionCustumerRecipient, boolean isFroud, boolean isFlaggedFraud) {
+                          TransactionCustomer transactionCustumerRecipient, boolean isFraud, boolean isFlaggedFraud) {
 
 
 public  Transaction{

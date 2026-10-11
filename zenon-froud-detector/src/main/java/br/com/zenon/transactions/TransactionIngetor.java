@@ -19,7 +19,7 @@ public class TransactionIngetor {
         try(Stream<String> stream = Files.lines(Path.of(filename))) {
             transactionList = stream
                     .skip(1)
-                    .limit(1000)
+                    .limit(50000)
                     .map(this::parseToTransaction)
                     .filter(Optional::isPresent)
                     .map(Optional::get).toList();
