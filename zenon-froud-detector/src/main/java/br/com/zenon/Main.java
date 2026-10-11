@@ -16,6 +16,14 @@ public class Main {
 
         transactions.stream().limit(10).forEach(IO::println);
 
+        IO.print("-----------------------------------------------------------------\n");
+
+        paySimFile = "../data/paysim_with_bad_data.csv";
+
+        List<Transaction> transactionBadData = transactionIngetor.read(paySimFile);
+        IO.println(transactionBadData.size());
+
+        transactionBadData.forEach(IO::println);
     }
 
 }

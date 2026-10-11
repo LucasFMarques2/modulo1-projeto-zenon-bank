@@ -5,6 +5,6 @@ public enum TransactionCategory {
     CASH_OUT,
     DEBIT,
     PAYMENT,
-    TRANSFER
+    TRANSFER,
 
 }
