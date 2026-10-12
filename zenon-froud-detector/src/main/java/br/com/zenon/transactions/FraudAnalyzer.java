@@ -1,6 +1,6 @@
 package br.com.zenon.transactions;
 
-import br.com.zenon.enums.TransactionCategory;
+import br.com.zenon.dto.FraudStatistics;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -15,40 +15,30 @@ public class FraudAnalyzer {
         this.transactions = transactionIngetor.read(fileName);
     }
 
-    public int countFrauds() {
-       return (int) transactions.stream().filter(Transaction::isFraud).count();
+    public FraudStatistics calculateStatistics() {
+        return transactions.stream()
+                .collect(
+                        FraudStatistics::new,
+                        FraudStatistics::accumulate,
+                        FraudStatistics::combine
+                );
     }
 
     public List<BigDecimal> TopThreeFraud(){
         return transactions.stream()
-                .filter((Transaction::isFraud))
-                .sorted(Comparator.comparing(Transaction::amount)
-                        .reversed())
+                .filter(Transaction::isFraud)
+                .sorted(Comparator.comparing(Transaction::amount).reversed())
                 .map(Transaction::amount)
-                .limit(3).toList();
+                .limit(3)
+                .toList();
     }
 
     public Set<String> FlaggedCustomer(){
-       return transactions.stream()
-               .filter(Transaction::isFraud)
-               .sorted(Comparator.comparing(Transaction::amount).reversed())
-               .flatMap(t -> Stream.of(
-                       t.transactionCustumerOrigin().name()
-               ))
-               .limit(5)
-               .collect(Collectors.toSet());
-    }
-
-    public BigDecimal prejudiceTotal() {
         return transactions.stream()
                 .filter(Transaction::isFraud)
-                .map(Transaction::amount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    public Map<TransactionCategory, Long> fraudCountByType (){
-        return transactions.stream()
-                .filter(Transaction::isFraud)
-                .collect(Collectors.groupingBy(Transaction::type, Collectors.counting()));
+                .sorted(Comparator.comparing(Transaction::amount).reversed())
+                .flatMap(t -> Stream.of(t.transactionCustumerOrigin().name()))
+                .limit(5)
+                .collect(Collectors.toSet());
     }
 }

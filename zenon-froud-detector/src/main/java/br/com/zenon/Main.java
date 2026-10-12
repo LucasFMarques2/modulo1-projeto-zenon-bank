@@ -1,4 +1,5 @@
 package br.com.zenon;
+import br.com.zenon.dto.FraudStatistics;
 import br.com.zenon.enums.TransactionCategory;
 import br.com.zenon.transactions.FraudAnalyzer;
 import br.com.zenon.transactions.Transaction;
@@ -37,33 +38,29 @@ public class Main {
 
         FraudAnalyzer fraudAnalyzer = new FraudAnalyzer(paySimFile);
 
-        int totalFrauds = fraudAnalyzer.countFrauds();
+        FraudStatistics stats = fraudAnalyzer.calculateStatistics();
+
         List<BigDecimal> getTopThreeFrauds = fraudAnalyzer.TopThreeFraud();
-        Set<String> flaggedustomer = fraudAnalyzer.FlaggedCustomer();
-        BigDecimal prejudiceTotal = fraudAnalyzer.prejudiceTotal();
-        Map<TransactionCategory, Long> fraudCountType = fraudAnalyzer.fraudCountByType();
+        Set<String> flaggedCustomer = fraudAnalyzer.FlaggedCustomer();
 
-       System.out.println("1. Total de fraudes: " + totalFrauds);
+        System.out.println("1. Total de fraudes: " + stats.getTotalFrauds());
 
-       System.out.println("2. Top 3 Fraudes de maior valor:");
-       getTopThreeFrauds.forEach(amount -> System.out.println(amount.toPlainString()));
+        System.out.println("2. Top 3 Fraudes de maior valor:");
+        getTopThreeFrauds.forEach(amount -> System.out.println(amount.toPlainString()));
 
-       System.out.println("3. Clientes Suspeitos:");
-       flaggedustomer.forEach(System.out::println);
+        System.out.println("3. Clientes Suspeitos:");
+        flaggedCustomer.forEach(System.out::println);
 
-       System.out.println("4. Prejuízo total: " + prejudiceTotal);
+        System.out.println("4. Prejuízo total: " + stats.getTotalPrejudice().toPlainString());
 
-       System.out.println("5. Fraudes por tipo: ");
-       fraudCountType.forEach((type, count) -> {
-           System.out.println("-" + type + ": " + count);
-       });
+        System.out.println("5. Fraudes por tipo: ");
+        stats.getFraudCountByType().forEach((type, count) -> {
+            System.out.println("-" + type + ": " + count);
+        });
 
         long fim = System.nanoTime();
         long duracaoMillisegundos = (fim - inicio) / 1_000_000;
-        System.out.println("Tempo de execução: " + duracaoMillisegundos + " ms");
-
-
-
+        System.out.print("Tempo de execução: " + duracaoMillisegundos + " ms");
 
     }
 
